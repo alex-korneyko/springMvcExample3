@@ -20,6 +20,7 @@ import javax.sql.DataSource;
  * Created by Alex Korneyko on 12.10.2016 11:01.
  */
 @Configuration
+//@ComponentScan("ua.in.dris4ecoder")
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

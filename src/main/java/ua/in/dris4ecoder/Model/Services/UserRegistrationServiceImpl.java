@@ -1,7 +1,7 @@
 package ua.in.dris4ecoder.Model.Services;
 
 import org.springframework.transaction.annotation.Transactional;
-import ua.in.dris4ecoder.Model.buisnessObjects.CustomUser;
+import ua.in.dris4ecoder.Model.businessObjects.CustomUserImpl;
 import ua.in.dris4ecoder.Model.dao.Dao;
 
 /**
@@ -26,7 +26,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
     @Override
     @Transactional
-    public boolean registerUser(CustomUser user) {
+    public boolean registerUser(CustomUserImpl user) {
 
         if (checkUserByLogin(user.getLogin()))
             return false;

@@ -3,9 +3,11 @@ package ua.in.dris4ecoder.config;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ua.in.dris4ecoder.Model.Services.UserRegistrationService;
@@ -23,6 +25,7 @@ import java.util.Properties;
  * Created by Alex Korneyko on 12.10.2016 8:55.
  */
 @Configuration
+@ComponentScan("ua.in.dris4ecoder")
 @EnableTransactionManagement
 public class HibernateConfig {
 
@@ -49,7 +52,7 @@ public class HibernateConfig {
 
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setPackagesToScan("ua.in dris4ecoder");
+        sessionFactoryBean.setPackagesToScan("ua.in.dris4ecoder");
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
         sessionFactoryBean.setHibernateProperties(properties);
@@ -58,26 +61,26 @@ public class HibernateConfig {
     }
 
     @Bean
-    DataSourceTransactionManager transactionManager(DataSource dataSource) {
+    HibernateTransactionManager transactionManager (SessionFactory sessionFactory) {
 
-        return new DataSourceTransactionManager(dataSource);
+        return new HibernateTransactionManager(sessionFactory);
     }
 
     @Bean
-    Dao dao(SessionFactory sessionFactory) {
+    Dao hibernateDaoImpl (SessionFactory sessionFactory) {
 
-        HibernateDaoImpl hibernateDao = new HibernateDaoImpl();
-        hibernateDao.setSessionFactory(sessionFactory);
+        Dao dao = new HibernateDaoImpl();
+        dao.setSessionFactory(sessionFactory);
 
-        return hibernateDao;
+        return dao;
     }
 
     @Bean
-    UserRegistrationServiceImpl userRegistrationService (Dao dao) {
+    UserRegistrationService userRegistrationServiceImpl (Dao dao) {
 
-        UserRegistrationServiceImpl userRegistrationServiceImpl = new UserRegistrationServiceImpl();
-        userRegistrationServiceImpl.setDao(dao);
+        UserRegistrationService userRegistrationService = new UserRegistrationServiceImpl();
+        userRegistrationService.setDao(dao);
 
-        return userRegistrationServiceImpl;
+        return userRegistrationService;
     }
 }

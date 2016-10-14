@@ -1,13 +1,13 @@
 package ua.in.dris4ecoder.web;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import ua.in.dris4ecoder.Model.Services.UserRegistrationServiceImpl;
-import ua.in.dris4ecoder.Model.buisnessObjects.CustomUser;
-import ua.in.dris4ecoder.Model.buisnessObjects.CustomUserImpl;
+import ua.in.dris4ecoder.Model.Services.UserRegistrationService;
+import ua.in.dris4ecoder.Model.businessObjects.CustomUserImpl;
 
 import java.util.Map;
 
@@ -17,7 +17,14 @@ import java.util.Map;
 @Controller()
 public class MainController {
 
-    UserRegistrationServiceImpl registrationService;
+    private UserRegistrationService registrationService;
+
+    @Bean
+    public String setRegistrationService(UserRegistrationService registrationService) {
+
+        this.registrationService = registrationService;
+        return null;
+    }
 
     @RequestMapping(value = "/")
     public ModelAndView indexController(@RequestParam(value = "error", required = false) String error) {
@@ -57,11 +64,12 @@ public class MainController {
             return view;
         }
 
-        CustomUser customUser = new CustomUserImpl(
+        CustomUserImpl customUser = new CustomUserImpl(
                 requestValues.get("name"),
                 requestValues.get("surname"),
                 requestValues.get("login"),
-                requestValues.get("password1")
+                requestValues.get("password1"),
+                true
         );
 
         registrationService.registerUser(customUser);
@@ -71,7 +79,5 @@ public class MainController {
         return view;
     }
 
-    public void setRegistrationService(UserRegistrationServiceImpl registrationService) {
-        this.registrationService = registrationService;
-    }
+
 }

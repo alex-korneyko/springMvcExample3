@@ -1,6 +1,7 @@
 package ua.in.dris4ecoder.Model.dao;
 
-import ua.in.dris4ecoder.Model.buisnessObjects.CustomUser;
+import org.hibernate.SessionFactory;
+import ua.in.dris4ecoder.Model.businessObjects.CustomUserImpl;
 
 import java.util.List;
 
@@ -9,13 +10,15 @@ import java.util.List;
  */
 public interface Dao {
 
-    CustomUser findUserByLogin (String login);
+    CustomUserImpl findUserByLogin (String login);
 
-    List<CustomUser> findAllUsers();
+    List<CustomUserImpl> findAllUsers();
 
     void deleteUserByLogin (String login);
 
-    void addUser (CustomUser user);
+    void addUser (CustomUserImpl user);
 
-    void editUser(CustomUser user);
+    void editUser(CustomUserImpl user);
+
+    void setSessionFactory(SessionFactory sessionFactory);
 }

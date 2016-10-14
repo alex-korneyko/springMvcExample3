@@ -1,4 +1,4 @@
-package ua.in.dris4ecoder.Model.buisnessObjects;
+package ua.in.dris4ecoder.Model.businessObjects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "users")
-public class CustomUserImpl implements CustomUser {
+public class CustomUserImpl {
 
     @Column(name = "name")
     private String name;
@@ -25,15 +25,19 @@ public class CustomUserImpl implements CustomUser {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "enabled")
+    private boolean enabled;
+
     public CustomUserImpl(String login) {
         this.login = login;
     }
 
-    public CustomUserImpl(String name, String surName, String login, String password) {
+    public CustomUserImpl(String name, String surName, String login, String password, boolean enabled) {
         this.name = name;
         this.surName = surName;
         this.login = login;
         this.password = password;
+        this.enabled = enabled;
     }
 
     public String getName() {
@@ -68,6 +72,14 @@ public class CustomUserImpl implements CustomUser {
         this.login = login;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,6 +102,7 @@ public class CustomUserImpl implements CustomUser {
                 "name='" + name + '\'' +
                 ", surName='" + surName + '\'' +
                 ", login='" + login + '\'' +
+                ", enabled=" + enabled +
                 '}';
     }
 }
