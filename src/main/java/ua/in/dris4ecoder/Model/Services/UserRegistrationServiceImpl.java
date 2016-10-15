@@ -1,7 +1,7 @@
 package ua.in.dris4ecoder.Model.Services;
 
 import org.springframework.transaction.annotation.Transactional;
-import ua.in.dris4ecoder.Model.businessObjects.CustomUserImpl;
+import ua.in.dris4ecoder.Model.businessObjects.CustomUser;
 import ua.in.dris4ecoder.Model.dao.Dao;
 
 /**
@@ -9,13 +9,13 @@ import ua.in.dris4ecoder.Model.dao.Dao;
  */
 public class UserRegistrationServiceImpl implements UserRegistrationService {
 
-    private Dao dao;
+    private Dao<CustomUser> dao;
 
     @Override
     @Transactional
     public boolean checkUserByLogin(String login) {
 
-        return dao.findUserByLogin(login) != null;
+        return dao.findItemByName(login) != null;
     }
 
     @Override
@@ -26,12 +26,12 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
     @Override
     @Transactional
-    public boolean registerUser(CustomUserImpl user) {
+    public boolean registerUser(CustomUser user) {
 
         if (checkUserByLogin(user.getLogin()))
             return false;
 
-        dao.addUser(user);
+        dao.addItem(user);
 
         return true;
     }

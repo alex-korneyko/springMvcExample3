@@ -1,16 +1,17 @@
 package ua.in.dris4ecoder.Model.businessObjects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Alex Korneyko on 13.10.2016 12:21.
  */
 @Entity
 @Table(name = "users")
-public class CustomUserImpl {
+public class CustomUser {
 
     @Column(name = "name")
     private String name;
@@ -28,16 +29,29 @@ public class CustomUserImpl {
     @Column(name = "enabled")
     private boolean enabled;
 
-    public CustomUserImpl(String login) {
+    @ManyToMany(cascade = CascadeType.ALL)
+    @Fetch(value = FetchMode.JOIN)
+    @JoinTable(
+            name = "group_members",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private List<UserGroup> userGroups;
+
+    public CustomUser() {
+    }
+
+    public CustomUser(String login) {
         this.login = login;
     }
 
-    public CustomUserImpl(String name, String surName, String login, String password, boolean enabled) {
+    public CustomUser(String name, String surName, String login, String password, boolean enabled, List<UserGroup> userGroups) {
         this.name = name;
         this.surName = surName;
         this.login = login;
         this.password = password;
         this.enabled = enabled;
+        this.userGroups = userGroups;
     }
 
     public String getName() {
@@ -80,12 +94,20 @@ public class CustomUserImpl {
         this.enabled = enabled;
     }
 
+    public List<UserGroup> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(List<UserGroup> userGroups) {
+        this.userGroups = userGroups;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CustomUserImpl)) return false;
+        if (!(o instanceof CustomUser)) return false;
 
-        CustomUserImpl that = (CustomUserImpl) o;
+        CustomUser that = (CustomUser) o;
 
         return login != null ? login.equals(that.login) : that.login == null;
 
@@ -98,11 +120,12 @@ public class CustomUserImpl {
 
     @Override
     public String toString() {
-        return "CustomUserImpl{" +
+        return "CustomUser{" +
                 "name='" + name + '\'' +
                 ", surName='" + surName + '\'' +
                 ", login='" + login + '\'' +
                 ", enabled=" + enabled +
+                ", userGroups=" + userGroups +
                 '}';
     }
 }

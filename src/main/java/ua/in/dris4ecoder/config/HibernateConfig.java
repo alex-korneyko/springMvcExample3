@@ -2,18 +2,22 @@ package ua.in.dris4ecoder.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ua.in.dris4ecoder.Model.Services.UserRegistrationService;
 import ua.in.dris4ecoder.Model.Services.UserRegistrationServiceImpl;
+import ua.in.dris4ecoder.Model.businessObjects.CustomUser;
+import ua.in.dris4ecoder.Model.businessObjects.UserGroup;
 import ua.in.dris4ecoder.Model.dao.Dao;
-import ua.in.dris4ecoder.Model.dao.HibernateDaoImpl;
+import ua.in.dris4ecoder.Model.dao.HibernateDaoGroups;
+import ua.in.dris4ecoder.Model.dao.HibernateDaoUsers;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
@@ -67,16 +71,28 @@ public class HibernateConfig {
     }
 
     @Bean
-    Dao hibernateDaoImpl (SessionFactory sessionFactory) {
+    Dao<CustomUser> hibernateDaoUsers(SessionFactory sessionFactory, BCryptPasswordEncoder passwordEncoder,
+                                      @Qualifier("hibernateDaoGroups") Dao<UserGroup> daoUserGroup) {
 
-        Dao dao = new HibernateDaoImpl();
+        Dao<CustomUser> dao = new HibernateDaoUsers();
+        dao.setSessionFactory(sessionFactory);
+        dao.setPasswordEncoder(passwordEncoder);
+        dao.setDaoGroups(daoUserGroup);
+
+        return dao;
+    }
+
+    @Bean
+    Dao<UserGroup> hibernateDaoGroups (SessionFactory sessionFactory) {
+
+        Dao<UserGroup> dao = new HibernateDaoGroups();
         dao.setSessionFactory(sessionFactory);
 
         return dao;
     }
 
     @Bean
-    UserRegistrationService userRegistrationServiceImpl (Dao dao) {
+    UserRegistrationService userRegistrationServiceImpl (@Qualifier("hibernateDaoUsers") Dao dao) {
 
         UserRegistrationService userRegistrationService = new UserRegistrationServiceImpl();
         userRegistrationService.setDao(dao);

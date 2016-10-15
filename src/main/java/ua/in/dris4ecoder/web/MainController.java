@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.in.dris4ecoder.Model.Services.UserRegistrationService;
-import ua.in.dris4ecoder.Model.businessObjects.CustomUserImpl;
+import ua.in.dris4ecoder.Model.businessObjects.CustomUser;
+import ua.in.dris4ecoder.Model.businessObjects.UserGroup;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -64,12 +66,13 @@ public class MainController {
             return view;
         }
 
-        CustomUserImpl customUser = new CustomUserImpl(
+        CustomUser customUser = new CustomUser(
                 requestValues.get("name"),
                 requestValues.get("surname"),
                 requestValues.get("login"),
                 requestValues.get("password1"),
-                true
+                true,
+                Arrays.asList(new UserGroup("Users"))
         );
 
         registrationService.registerUser(customUser);

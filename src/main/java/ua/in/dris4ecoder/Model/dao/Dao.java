@@ -1,24 +1,30 @@
 package ua.in.dris4ecoder.Model.dao;
 
 import org.hibernate.SessionFactory;
-import ua.in.dris4ecoder.Model.businessObjects.CustomUserImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import ua.in.dris4ecoder.Model.businessObjects.CustomUser;
+import ua.in.dris4ecoder.Model.businessObjects.UserGroup;
 
 import java.util.List;
 
 /**
  * Created by Alex Korneyko on 13.10.2016 12:24.
  */
-public interface Dao {
+public interface Dao<T> {
 
-    CustomUserImpl findUserByLogin (String login);
+    T findItemByName(String name);
 
-    List<CustomUserImpl> findAllUsers();
+    List<T> findAllItems();
 
-    void deleteUserByLogin (String login);
+    void deleteItemByName (String name);
 
-    void addUser (CustomUserImpl user);
+    void addItem(T name);
 
-    void editUser(CustomUserImpl user);
+    void editItem(T item);
 
     void setSessionFactory(SessionFactory sessionFactory);
+
+    void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder);
+
+    void setDaoGroups(Dao<UserGroup> daoGroups);
 }
